@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script>
+/**
+ * Definition for singly-linked list.
+ * function ListNode(val) {
+ *     this.val = val;
+ *     this.next = null;
+ * }
+ */
+ function ListNode(val) {
+    this.val = val;
+    this.next = null;
+}
+
+/**
+ * @param {ListNode} l1
+ * @param {ListNode} l2
+ * @return {ListNode}
+ */
+// var addTwoNumbers = function(l1, l2) {
+//     function linkToSum(link) {
+//         let sum = `${link.val}`;
+//         let next = link.next;
+//         while(next) {
+//             sum = `${next.val}${sum}`;
+//             next = next.next;
+//         }
+//         return sum;
+//     }
+//     const str = `${Number(linkToSum(l1)) + Number(linkToSum(l2))}`;
+//     var i = str.length - 1;
+//     var node = null;
+//     var next = null;
+//     while(i >= 0) {
+//         if (node) {
+//             next.next = new ListNode(Number(str[i]));
+//             next = next.next;
+//         } else {
+//             node = new ListNode(Number(str[i]));
+//             next = node;
+//         }
+//         i--;
+//     }
+//     return node;
+// };
+var addTwoNumbers = function(l1, l2) {
+    var arr = [];
+    var next1 = l1;
+    var next2 = l2;
+    while(next1 || next2) {
+        // console.log(next1.val, next2.val, 'xxx');
+        var val1 = next1 ? next1.val : 0;
+        var val2 = next2 ? next2.val : 0;
+        if (val1 && val2) arr.push(val1 + val2);
+        else (arr.push(val1 || val2));
+        next1 = next1 && next1.next ? next1.next : null;
+        next2 = next2 && next2.next ? next2.next : null;
+    }
+    console.log(arr,'arr');
+    var i = 0;
+    var newArr = [];
+    while(i < arr.length) {
+        console.log(arr[i])
+        if (arr[i] >= 10) {
+            console.log('if');
+            newArr.push(arr[i] - 10);
+            arr[i+1] += 1; 
+        } else {
+            newArr.push(arr[i]);
+            console.log('else');
+        }
+        console.log(newArr, 'newArr');
+        i++;
+    }
+    console.log(newArr, 'newewew');
+    return newArr;
+};
+var a = {
+    val: 2,
+    next: {
+        val: 4,
+        next: {
+            val: 3,
+            next: null
+        }
+    }
+}
+
+var b = {
+    val: 5,
+    next: {
+        val: 6,
+        next: {
+            val: 4,
+            next: null
+        }
+    }
+}
+console.log(addTwoNumbers(a, b));
+</script>
