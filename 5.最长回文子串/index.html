@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  
+</body>
+</html>
+<script>
+/**
+ * @param {string} s
+ * @return {string}
+ */
+// 解法一（能成功，但是执行的时间太长导致LeetCode报错）
+const longestPalindrome1 = (s) => {
+  if (!s) return s;
+  const reverseStr = a => a.split('').reverse().join('');
+  const checkPalindrome = b => b === reverseStr(b);
+  let str = '';
+  let len = s.length;
+  let i = 0;
+  while (!str) {
+    const b = s.substr(i, len);
+    const bool = checkPalindrome(b);
+    if (!bool) {
+      if (i + len < s.length) i++;
+      else {
+        len--;
+        i = 0;
+      }
+    } else str = b;
+  }
+  return str;
+};
+
+
+// 思路二：取两个与三个 存数组中。分别遍历扩散开取最大,遍历中，如果后面的项直接用当前最长子串的长度一半作为扩散起始长度
+// 解法二
+const longestPalindrome2 = (s) => {
+  if (!s || s.length === 1) return s;
+  if (s.length === 2 && s[0] !== s[1]) return s[0];
+  const reverseStr = a => a.split('').reverse().join('');
+  const checkPalindrome = b => b === reverseStr(b);
+  let str = '';
+  let double = [];
+  let trible = [];
+  for (let i = 0;i<s.length-1;i++) {
+    if (s[i] === s[i+1]) double.push(i);
+    if (i > 0 && s[i - 1] === s[i + 1]) trible.push(i);
+  }
+  if (!double.length && !trible.length) return s[0];
+  let a = 0;
+  let b = 0;
+  for (let k = 0;k<double.length;k++) {
+    const index = double[k];
+    while(index - a >= 0 && index + b + 2 <= s.length + 1) {
+      if (checkPalindrome(s.slice(index - a, index + b + 2))) {
+        str = s.slice(index - a, index + b + 2);
+        a++;
+        b++;
+      } else break;
+    }
+  }
+  for (let j = 0;j<trible.length;j++) {
+    const index = trible[j];
+    while(index - a >= 0 && index + b + 1<= s.length + 1) {
+      if (checkPalindrome(s.slice(index - a, index + b + 1))) {
+        str = s.slice(index - a, index + b + 1);
+        a++;
+        b++;
+      } else break;
+    }
+  }
+  return str;
+};
+
+
+// 思路三：先从最大的取中心点，两边扩散，一直到最长回文子串。在均分该字符串，
+// 分别取两个均分的同样操作，直接取当前最长的回文子串的长度作为长度测量两个均分中心的，如果不满足就直接返回继续均分。
+// 如果现有的回文子串长度大于待均分的字符串， 则直接取该回文子串作为返回值
+
+// 解法三
+// const longestPalindrome3 = (s) => {
+//   if (!s || s.length === 1) return s;
+//   const reverseStr = a => a.split('').reverse().join('');
+//   const checkPalindrome = b => b === reverseStr(b);
+//   let text = '';
+//   let l = 0;
+//   let r = 0;
+//   const fn = (str) => {
+//     if (str.length % 2) {
+//       const index = str.length / 2 - 1;
+//       while(index - l >= 0 && index + r <= s.length) {
+//         if (s[index - l] === s[index + 1 + r]) {
+//           text = s.substr(index - l, index - l + 1);
+//           l++;
+//           r++;
+//         } else break;
+//       }
+//     }
+//   }
+//   fn(s);
+//   return str;
+// };
+
+var str = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+console.log(longestPalindrome1(str) === longestPalindrome2(str));
+// console.log(longestPalindrome("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabcaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+
+</script>
