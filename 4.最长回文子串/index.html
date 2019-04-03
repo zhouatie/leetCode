@@ -15,7 +15,23 @@
  * @param {string} s
  * @return {string}
  */
- var longestPalindrome = function(s) {
-    
+const longestPalindrome = function(s) {
+  debugger;
+  const checkPalindrome = a => a === a.split('').reverse().join('');
+  let str = '';
+  let len = 1;
+  let i = 0;
+  while (i+len < s.length) {
+    const bool = checkPalindrome(s.slice(i, len));
+    if (bool) {
+          str = s.slice(i, len);
+          i = 0;
+          len++;
+      } else {
+          i++;
+      }
+  }
+  return str;
 };
+console.log(longestPalindrome('abcdcga'));
 </script>
